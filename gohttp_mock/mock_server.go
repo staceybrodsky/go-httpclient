@@ -6,17 +6,22 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+
+	"github.com/staceybrodsky/go-httpclient/core"
 )
 
 var (
 	mockupServer = mockServer{
-		mocks: make(map[string]*Mock),
+		mocks:      make(map[string]*Mock),
+		httpClient: &httpClientMock{},
 	}
 )
 
 type mockServer struct {
 	enabled     bool
 	serverMutex sync.Mutex
+
+	httpClient core.HttpClient
 
 	mocks map[string]*Mock
 }
@@ -33,6 +38,14 @@ func StopMockServer() {
 	defer mockupServer.serverMutex.Unlock()
 
 	mockupServer.enabled = false
+}
+
+func IsMockServerEnabled() bool {
+	return mockupServer.enabled
+}
+
+func GetMockedClient() core.HttpClient {
+	return mockupServer.httpClient
 }
 
 func DeleteMocks() {
@@ -66,16 +79,4 @@ func (m *mockServer) cleanBody(body string) string {
 	body = strings.ReplaceAll(body, "\t", "")
 	body = strings.ReplaceAll(body, "\n", "")
 	return body
-}
-
-func GetMock(method, url, body string) *Mock {
-	if !mockupServer.enabled {
-		return nil
-	}
-	if mock := mockupServer.mocks[mockupServer.getMockKey(method, url, body)]; mock != nil {
-		return mock
-	}
-	return &Mock{
-		Error: fmt.Errorf(fmt.Sprintf("no mock matching %s from '%s' with given body", method, url)),
-	}
 }
