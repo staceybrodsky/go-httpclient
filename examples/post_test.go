@@ -11,8 +11,8 @@ import (
 
 func TestCreateRepo(t *testing.T) {
 	t.Run("timeout from GitHub", func(t *testing.T) {
-		gohttp_mock.DeleteMocks()
-		gohttp_mock.AddMock(gohttp_mock.Mock{
+		gohttp_mock.MockupServer.DeleteMocks()
+		gohttp_mock.MockupServer.AddMock(gohttp_mock.Mock{
 			Method:      http.MethodPost,
 			Url:         "https://api.github.com/user/repos",
 			RequestBody: `{"name":"test-repo","description":"","private":true}`,
@@ -40,8 +40,8 @@ func TestCreateRepo(t *testing.T) {
 	})
 
 	t.Run("noError", func(t *testing.T) {
-		gohttp_mock.DeleteMocks()
-		gohttp_mock.AddMock(gohttp_mock.Mock{
+		gohttp_mock.MockupServer.DeleteMocks()
+		gohttp_mock.MockupServer.AddMock(gohttp_mock.Mock{
 			Method:      http.MethodPost,
 			Url:         "https://api.github.com/user/repos",
 			RequestBody: `{"name":"test-repo","description":"","private":true}`,

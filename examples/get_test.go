@@ -14,11 +14,11 @@ import (
 func TestMain(m *testing.M) {
 	fmt.Println("About to start test cases for package 'examples'")
 
-	gohttp_mock.StartMockServer()
+	gohttp_mock.MockupServer.Start()
 
 	exitCode := m.Run()
 
-	gohttp_mock.StopMockServer()
+	gohttp_mock.MockupServer.Stop()
 
 	os.Exit(exitCode)
 }
@@ -27,8 +27,8 @@ func TestGet(t *testing.T) {
 	GetEndpoints()
 
 	t.Run("test error fetching from github", func(t *testing.T) {
-		gohttp_mock.DeleteMocks()
-		gohttp_mock.AddMock(gohttp_mock.Mock{
+		gohttp_mock.MockupServer.DeleteMocks()
+		gohttp_mock.MockupServer.AddMock(gohttp_mock.Mock{
 			Method: http.MethodGet,
 			Url:    "https://api.github.com",
 			Error:  errors.New("timeout getting github endpoints"),
@@ -50,8 +50,8 @@ func TestGet(t *testing.T) {
 	})
 
 	t.Run("test error unmarshal json response body", func(t *testing.T) {
-		gohttp_mock.DeleteMocks()
-		gohttp_mock.AddMock(gohttp_mock.Mock{
+		gohttp_mock.MockupServer.DeleteMocks()
+		gohttp_mock.MockupServer.AddMock(gohttp_mock.Mock{
 			Method:             http.MethodGet,
 			Url:                "https://api.github.com",
 			ResponseStatusCode: http.StatusOK,
@@ -74,8 +74,8 @@ func TestGet(t *testing.T) {
 	})
 
 	t.Run("test no error", func(t *testing.T) {
-		gohttp_mock.DeleteMocks()
-		gohttp_mock.AddMock(gohttp_mock.Mock{
+		gohttp_mock.MockupServer.DeleteMocks()
+		gohttp_mock.MockupServer.AddMock(gohttp_mock.Mock{
 			Method:             http.MethodGet,
 			Url:                "https://api.github.com",
 			ResponseStatusCode: http.StatusOK,

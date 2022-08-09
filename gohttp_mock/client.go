@@ -23,7 +23,7 @@ func (c *httpClientMock) Do(req *http.Request) (*http.Response, error) {
 
 	var response http.Response
 
-	mock := mockupServer.mocks[mockupServer.getMockKey(req.Method, req.URL.String(), string(body))]
+	mock := MockupServer.mocks[MockupServer.getMockKey(req.Method, req.URL.String(), string(body))]
 	if mock != nil {
 		if mock.Error != nil {
 			return nil, mock.Error
