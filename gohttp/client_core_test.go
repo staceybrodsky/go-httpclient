@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+
+	"github.com/staceybrodsky/go-httpclient/gomime"
 )
 
 func TestGetRequestHeaders(t *testing.T) {
@@ -13,8 +15,8 @@ func TestGetRequestHeaders(t *testing.T) {
 	client.builder.headers = make(http.Header)
 
 	commonHeaders := make(http.Header)
-	commonHeaders.Set("Content-Type", "application/json")
-	commonHeaders.Set("User-Agent", "cool-http-client")
+	commonHeaders.Set(gomime.HeaderContentType, gomime.ContentTypeJson)
+	commonHeaders.Set(gomime.HeaderUserAgent, "cool-http-client")
 	client.builder.headers = commonHeaders
 
 	// Execution
