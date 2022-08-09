@@ -1,11 +1,13 @@
-package gohttp
+package gohttp_mock
 
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/staceybrodsky/go-httpclient/core"
 )
 
-// Mock structure provides a clean way to configure HTTP mockes based on the
+// Mock structure provides a clean way to configure HTTP mocks based on the
 // combination between request method, URL and request body.
 type Mock struct {
 	Method      string
@@ -18,15 +20,15 @@ type Mock struct {
 }
 
 // GetResponse returns a Response object based on the mock configuration.
-func (m *Mock) GetResponse() (*Response, error) {
+func (m *Mock) GetResponse() (*core.Response, error) {
 	if m.Error != nil {
 		return nil, m.Error
 	}
 
-	response := Response{
-		status:     fmt.Sprintf("%d %s", m.ResponseStatusCode, http.StatusText(m.ResponseStatusCode)),
-		statusCode: m.ResponseStatusCode,
-		body:       []byte(m.ResponseBody),
+	response := core.Response{
+		Status:     fmt.Sprintf("%d %s", m.ResponseStatusCode, http.StatusText(m.ResponseStatusCode)),
+		StatusCode: m.ResponseStatusCode,
+		Body:       []byte(m.ResponseBody),
 	}
 
 	return &response, nil
