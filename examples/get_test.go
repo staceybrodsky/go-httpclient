@@ -2,19 +2,32 @@ package examples
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/staceybrodsky/go-httpclient/gohttp"
 )
 
-func TestGet(t *testing.T) {
+func TestMain(m *testing.M) {
+	fmt.Println("About to start test cases for package 'examples'")
+
 	gohttp.StartMockServer()
 
+	exitCode := m.Run()
+
+	gohttp.StopMockServer()
+
+	os.Exit(exitCode)
+}
+
+func TestGet(t *testing.T) {
 	GetEndpoints()
 
 	t.Run("test error fetching from github", func(t *testing.T) {
+		gohttp.FlushMocks()
 		gohttp.AddMock(gohttp.Mock{
 			Method: http.MethodGet,
 			Url:    "https://api.github.com",
@@ -37,6 +50,7 @@ func TestGet(t *testing.T) {
 	})
 
 	t.Run("test error unmarshal json response body", func(t *testing.T) {
+		gohttp.FlushMocks()
 		gohttp.AddMock(gohttp.Mock{
 			Method:             http.MethodGet,
 			Url:                "https://api.github.com",
@@ -60,6 +74,7 @@ func TestGet(t *testing.T) {
 	})
 
 	t.Run("test no error", func(t *testing.T) {
+		gohttp.FlushMocks()
 		gohttp.AddMock(gohttp.Mock{
 			Method:             http.MethodGet,
 			Url:                "https://api.github.com",
@@ -77,10 +92,8 @@ func TestGet(t *testing.T) {
 			t.Error("endpoints were expected and we got nil")
 		}
 
-		if endpoints.CurrentUserUrl != "https://api.github.com/user" {
+		if endpoints != nil && endpoints.CurrentUserUrl != "https://api.github.com/user" {
 			t.Error("unexpected error")
 		}
 	})
-
-	gohttp.StopMockServer()
 }
